@@ -1,4 +1,20 @@
-# Panorama (C++17 + OpenCV 4)
+# Mill's Panorama Generator
+
+## Some examples:
+<figure>
+	<img src="media/samuel_beckett_pano.jpg" alt="Samuel Beckett Bridge panorama" style="max-width: 100%; width: 100%; height: auto;" />
+	<figcaption align="center"><i>Samuel Beckett Bridge, Dublin</i></figcaption>
+</figure>
+
+<figure>
+	<img src="media/tcd_front_square_pano.jpg" alt="TCD Front Square panorama 1" style="max-width: 100%; width: 100%; height: auto;" />
+	<figcaption align="center"><i>Trinity College Dublin Front Square</i></figcaption>
+</figure>
+
+<figure>
+	<img src="media/tcd_front_square_pano_2.jpg" alt="TCD Front Square panorama 2" style="max-width: 100%; width: 100%; height: auto;" />
+	<figcaption align="center"><i>Trinity College Dublin Front Square, Again</i></figcaption>
+</figure>
 
 A small, cross-platform panorama stitching tool using OpenCV's Stitcher and C++17 `std::filesystem`.
 
@@ -10,16 +26,16 @@ A small, cross-platform panorama stitching tool using OpenCV's Stitcher and C++1
 - Command-line interface for input dir, output dir, and output filename.
 
 ## Project structure
-root/
-|-- build/
-|-- images/
-|-- include/
-|-- media/
-|-- output/
-|-- src/
-|-- main.cpp
-|-- .gitignore
-|-- Makefile
+root/ \\
+|-- build/ \\
+|-- images/ \\
+|-- include/ \\
+|-- media/ \\
+|-- output/ \\
+|-- src/ \\
+|-- main.cpp \\
+|-- .gitignore \\
+|-- Makefile \\
 \-- CMakeLists.txt
 
 ## Requirements
