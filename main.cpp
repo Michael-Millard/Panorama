@@ -7,6 +7,7 @@
 #include "cli.hpp"
 #include "image_io.hpp"
 #include "panorama_stitcher.hpp"
+#include "utils.hpp"
 
 namespace fs = std::filesystem;
 
@@ -34,6 +35,18 @@ int main(int argc, char** argv) {
             if (ec) {
                 std::cerr << "Failed to create output directory: " << outputDir << " (" << ec.message() << ")\n";
                 return 3;
+            }
+        }
+
+        // Convert any HEIC/HEIF images to JPG first (non-recursive)
+        {
+            std::string report;
+            std::size_t converted = utils::convert_heic_to_jpg_in_dir(inputDir, 95, false, &report);
+            if (converted > 0) {
+                std::cout << "Converted " << converted << " HEIC image(s) to JPG in '" << inputDir << "'\n";
+            }
+            if (!report.empty()) {
+                std::cout << report; // include per-file results
             }
         }
 
@@ -82,13 +95,16 @@ int main(int argc, char** argv) {
             return 7;
         }
 
-        // Save result
-        if (!cv::imwrite(outFile.string(), pano)) {
+    // Trim black bands (top/bottom) from result
+    cv::Mat trimmed = utils::trim_black_bands_top_bottom(pano, 10, 0.05, 2);
+
+    // Save result
+    if (!cv::imwrite(outFile.string(), trimmed)) {
             std::cerr << "Failed to save panorama to: " << outFile << "\n";
             return 8;
         }
 
-        std::cout << "Panorama saved to: " << outFile << "\n";
+    std::cout << "Panorama saved to: " << outFile << "\n";
         return 0;
     } catch (const std::exception& ex) {
         std::cerr << "Unhandled exception: " << ex.what() << "\n";

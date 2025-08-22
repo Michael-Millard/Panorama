@@ -6,6 +6,16 @@
 
 PanoramaStitcher::PanoramaStitcher() = default;
 
+static const char* status_to_cstr(cv::Stitcher::Status s) {
+    switch (s) {
+        case cv::Stitcher::OK: return "OK";
+        case cv::Stitcher::ERR_NEED_MORE_IMGS: return "ERR_NEED_MORE_IMGS";
+        case cv::Stitcher::ERR_HOMOGRAPHY_EST_FAIL: return "ERR_HOMOGRAPHY_EST_FAIL";
+        case cv::Stitcher::ERR_CAMERA_PARAMS_ADJUST_FAIL: return "ERR_CAMERA_PARAMS_ADJUST_FAIL";
+        default: return "UNKNOWN";
+    }
+}
+
 bool PanoramaStitcher::stitch(const std::vector<cv::Mat>& images, cv::Mat& output, std::string& error_message) const {
     if (images.size() < 1) {
         error_message = "No images provided";
@@ -24,7 +34,7 @@ bool PanoramaStitcher::stitch(const std::vector<cv::Mat>& images, cv::Mat& outpu
         cv::Stitcher::Status status = stitcher->stitch(images, output);
         if (status != cv::Stitcher::OK) {
             std::ostringstream oss;
-            oss << "OpenCV Stitcher failed with status: " << static_cast<int>(status);
+            oss << "OpenCV Stitcher failed with status: " << status_to_cstr(status);
             error_message = oss.str();
             return false;
         }
