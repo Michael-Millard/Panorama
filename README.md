@@ -1,22 +1,21 @@
 # Mill's Panorama Generator
+A small, cross-platform panorama stitching tool to cure my unemployment boredom and make myself a LinkedIn background. It is written in C++17 (for std::filesystem) and OpenCV 4.12 (any OpenCV 4.X should work fine).
 
 ## Some examples:
 <figure>
-	<img src="media/samuel_beckett_pano.jpg" alt="Samuel Beckett Bridge panorama" style="max-width: 100%; width: 100%; height: auto;" />
 	<figcaption align="center"><i>Samuel Beckett Bridge, Dublin</i></figcaption>
+	<img src="media/samuel_beckett_pano.jpg" alt="Samuel Beckett Bridge panorama" style="max-width: 100%; width: 100%; height: auto;" />
 </figure>
 
 <figure>
-	<img src="media/tcd_front_square_pano.jpg" alt="TCD Front Square panorama 1" style="max-width: 100%; width: 100%; height: auto;" />
 	<figcaption align="center"><i>Trinity College Dublin Front Square</i></figcaption>
+	<img src="media/tcd_front_square_pano.jpg" alt="TCD Front Square panorama 1" style="max-width: 100%; width: 100%; height: auto;" />
 </figure>
 
 <figure>
-	<img src="media/tcd_front_square_pano_2.jpg" alt="TCD Front Square panorama 2" style="max-width: 100%; width: 100%; height: auto;" />
 	<figcaption align="center"><i>Trinity College Dublin Front Square, Again</i></figcaption>
+	<img src="media/tcd_front_square_pano_2.jpg" alt="TCD Front Square panorama 2" style="max-width: 100%; width: 100%; height: auto;" />
 </figure>
-
-A small, cross-platform panorama stitching tool using OpenCV's Stitcher and C++17 `std::filesystem`.
 
 ## Features
 - Loads all images from an input directory (assumed left-to-right order by filename).
