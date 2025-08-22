@@ -2,6 +2,7 @@
 A small, cross-platform panorama stitching tool to cure my unemployment boredom and make myself a LinkedIn background. It is written in C++17 (for std::filesystem) and OpenCV 4.12 (any OpenCV 4.X should work fine).
 
 ## Some examples:
+Can definitely do a bit of editing here to make them prettier. Also, don't aim up as much as I did. Keep the camera as horizontal as possible for best results. Would also recommend choosing a nicer day than I did but this is Dublin so beggars can't be choosers.
 <figure>
 	<figcaption align="center"><i>Samuel Beckett Bridge, Dublin</i></figcaption>
 	<img src="media/samuel_beckett_pano.jpg" alt="Samuel Beckett Bridge panorama" style="max-width: 100%; width: 100%; height: auto;" />
