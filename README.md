@@ -27,7 +27,7 @@ Can definitely do a bit of editing here to make them prettier. Also, don't aim u
 
 ## Project structure
 ```
-root/
+Panorama/
 ├── build/
 ├── images/
 ├── include/
