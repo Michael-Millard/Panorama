@@ -25,17 +25,19 @@ A small, cross-platform panorama stitching tool to cure my unemployment boredom 
 - Command-line interface for input dir, output dir, and output filename.
 
 ## Project structure
-root/ \\
-|-- build/ \\
-|-- images/ \\
-|-- include/ \\
-|-- media/ \\
-|-- output/ \\
-|-- src/ \\
-|-- main.cpp \\
-|-- .gitignore \\
-|-- Makefile \\
-\-- CMakeLists.txt
+```
+root/
+├── build/
+├── images/
+├── include/
+├── media/
+├── output/
+├── src/
+├── main.cpp
+├── .gitignore
+├── Makefile
+└── CMakeLists.txt
+```
 
 ## Requirements
 - C++17 compiler
