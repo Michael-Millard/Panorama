@@ -11,12 +11,10 @@ cmake_install.cmake
 .vscode/
 
 # Output
-output/*
-!output/.gitkeep
+output/
 
-# Images (keep folder tracked)
-images/*
-!images/.gitkeep
+# Images
+images/
 
 # OS files
 .DS_Store
