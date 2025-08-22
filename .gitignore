@@ -1,15 +1,23 @@
-images/
+# Build artifacts
 build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+*.user
+*.vcxproj*
+*.sln
+
+# Editor
 .vscode/
 
-*.png
-*.jpg
-*.jpeg
-*.webp
-*.mp4
-*.avi
-*.mov
-*.wav
+# Output
+output/*
+!output/.gitkeep
 
-Makefile
-CMakeLists.txt
+# Images (keep folder tracked)
+images/*
+!images/.gitkeep
+
+# OS files
+.DS_Store
+Thumbs.db
