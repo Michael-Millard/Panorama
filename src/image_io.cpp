@@ -10,7 +10,9 @@ static bool has_image_ext(const path& p) {
     std::string ext = p.extension().string();
     std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c){ return std::tolower(c); });
     for (auto e : exts) {
-        if (ext == e) return true;
+        if (ext == e) {
+            return true;
+        }
     }
     return false;
 }
@@ -21,7 +23,9 @@ std::vector<path> list_image_files(const path& dir) {
         return files;
     }
     for (const auto& entry : std::filesystem::directory_iterator(dir)) {
-        if (!entry.is_regular_file()) continue;
+        if (!entry.is_regular_file()) {
+            continue;
+        }
         const path& p = entry.path();
         if (has_image_ext(p)) {
             files.push_back(p);
