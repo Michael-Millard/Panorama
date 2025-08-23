@@ -25,11 +25,13 @@ int main(int argc, char** argv) {
         fs::path inputDir = opts.input_dir.empty() ? fs::path("images") : fs::path(opts.input_dir);
         fs::path outputDir = opts.output_dir.empty() ? fs::path("output") : fs::path(opts.output_dir);
 
+        // Check input directory exists
         if (!fs::exists(inputDir) || !fs::is_directory(inputDir)) {
             std::cerr << "Input directory does not exist or is not a directory: " << inputDir << "\n";
             return 2;
         }
 
+        // Create output directory if it doesn't exist
         if (!fs::exists(outputDir)) {
             std::error_code ec;
             fs::create_directories(outputDir, ec);
@@ -40,15 +42,14 @@ int main(int argc, char** argv) {
         }
 
         // Convert any HEIC/HEIF images to JPG first (non-recursive)
-        {
-            std::string report;
-            std::size_t converted = utils::convert_heic_to_jpg_in_dir(inputDir, 95, false, &report);
-            if (converted > 0) {
-                std::cout << "Converted " << converted << " HEIC image(s) to JPG in '" << inputDir << "'\n";
-            }
-            if (!report.empty()) {
-                std::cout << report; // include per-file results
-            }
+        int jpgQuality = 95;
+        std::string report;
+        std::size_t converted = utils::convert_heic_to_jpg_in_dir(inputDir, jpgQuality, false, &report);
+        if (converted > 0) {
+            std::cout << "Converted " << converted << " HEIC image(s) to JPG in '" << inputDir << "'\n";
+        }
+        if (!report.empty()) {
+            std::cout << report; // include per-file results
         }
 
         // Gather images
@@ -78,7 +79,6 @@ int main(int argc, char** argv) {
             }
             images.emplace_back(std::move(img));
         }
-
         if (images.empty()) {
             std::cerr << "Failed to load any images from: " << inputDir << "\n";
             return 5;
@@ -86,7 +86,6 @@ int main(int argc, char** argv) {
 
         // If only one image provided, save it directly as the panorama
         fs::path outFile = outputDir / (opts.output_filename.empty() ? fs::path("panorama.jpg") : fs::path(opts.output_filename));
-
         if (images.size() == 1) {
             if (!cv::imwrite(outFile.string(), images.front())) {
                 std::cerr << "Failed to save output image to: " << outFile << "\n";
@@ -102,21 +101,24 @@ int main(int argc, char** argv) {
         OpenCVStitcher stitcher;
         stitcher.set_top_match_only(opts.top_match_only);
         cv::Stitcher::Mode mode = (opts.mode == "scans") ? cv::Stitcher::SCANS : cv::Stitcher::PANORAMA;
-        std::vector<cv::Mat> test_images = {images[1], images[2], images[3]}; // For debugging
-        if (!stitcher.stitch(test_images, pano, err, mode)) {
+        if (!stitcher.stitch(images, pano, err, mode)) {
             std::cerr << "Stitching failed: " << err << "\n";
             return 7;
         }
 
         // Trim black bands (top/bottom) from result
-        cv::Mat trimmed = utils::trim_black_bands_top_bottom(pano, 10, 0.05, 2);
+        int blackThresh = 5;                // Threshold for black pixel detection
+        double rowBlackPixelRatio = 0.05;   // % of black pixels in the row to trim it
+        int trimExtra = 2;                  // Safety trim
+        cv::Mat trimmed = utils::trim_black_bands_top_bottom(pano, blackThresh, rowBlackPixelRatio, trimExtra);
 
         // Save result
         if (!cv::imwrite(outFile.string(), trimmed)) {
             std::cerr << "Failed to save panorama to: " << outFile << "\n";
             return 8;
         }
-
+        
+        // Success
         std::cout << "Panorama saved to: " << outFile << "\n";
         return 0;
     } catch (const std::exception& ex) {
