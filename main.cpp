@@ -3,6 +3,7 @@
 #include <vector>
 #include <filesystem>
 #include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
 
 #include "cli.hpp"
 #include "image_io.hpp"
@@ -66,6 +67,15 @@ int main(int argc, char** argv) {
                 std::cerr << "Warning: failed to load image: " << p << "\n";
                 continue;
             }
+            // Optional downscale to limit memory and speed up
+            if (opts.max_dim > 0) {
+                int w = img.cols, h = img.rows;
+                int m = std::max(w, h);
+                if (m > opts.max_dim) {
+                    double scale = static_cast<double>(opts.max_dim) / static_cast<double>(m);
+                    cv::resize(img, img, cv::Size(), scale, scale, cv::INTER_AREA);
+                }
+            }
             images.emplace_back(std::move(img));
         }
 
@@ -89,22 +99,25 @@ int main(int argc, char** argv) {
         // Stitch panorama
         cv::Mat pano;
         std::string err;
-        PanoramaStitcher stitcher;
-        if (!stitcher.stitch(images, pano, err)) {
+        OpenCVStitcher stitcher;
+        stitcher.set_top_match_only(opts.top_match_only);
+        cv::Stitcher::Mode mode = (opts.mode == "scans") ? cv::Stitcher::SCANS : cv::Stitcher::PANORAMA;
+        std::vector<cv::Mat> test_images = {images[1], images[2], images[3]}; // For debugging
+        if (!stitcher.stitch(test_images, pano, err, mode)) {
             std::cerr << "Stitching failed: " << err << "\n";
             return 7;
         }
 
-    // Trim black bands (top/bottom) from result
-    cv::Mat trimmed = utils::trim_black_bands_top_bottom(pano, 10, 0.05, 2);
+        // Trim black bands (top/bottom) from result
+        cv::Mat trimmed = utils::trim_black_bands_top_bottom(pano, 10, 0.05, 2);
 
-    // Save result
-    if (!cv::imwrite(outFile.string(), trimmed)) {
+        // Save result
+        if (!cv::imwrite(outFile.string(), trimmed)) {
             std::cerr << "Failed to save panorama to: " << outFile << "\n";
             return 8;
         }
 
-    std::cout << "Panorama saved to: " << outFile << "\n";
+        std::cout << "Panorama saved to: " << outFile << "\n";
         return 0;
     } catch (const std::exception& ex) {
         std::cerr << "Unhandled exception: " << ex.what() << "\n";

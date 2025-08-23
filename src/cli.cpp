@@ -33,6 +33,28 @@ CLIOptions parse_cli(int argc, char** argv) {
             } else {
                 std::cerr << "Missing value for " << a << "\n";
             }
+        } else if (a == "--top-match-only") {
+            opts.top_match_only = true;
+        } else if (a == "--max-dim") {
+            if (i + 1 < args.size()) {
+                try {
+                    opts.max_dim = std::stoi(args[++i]);
+                } catch (...) {
+                    std::cerr << "Invalid integer for --max-dim\n";
+                }
+            } else {
+                std::cerr << "Missing value for --max-dim\n";
+            }
+        } else if (a == "--mode") {
+            if (i + 1 < args.size()) {
+                opts.mode = args[++i];
+                if (opts.mode != "panorama" && opts.mode != "scans") {
+                    std::cerr << "Invalid value for --mode (use 'panorama' or 'scans')\n";
+                    opts.mode = "panorama";
+                }
+            } else {
+                std::cerr << "Missing value for --mode\n";
+            }
         } else {
             std::cerr << "Unknown argument: " << a << "\n";
         }
@@ -42,12 +64,15 @@ CLIOptions parse_cli(int argc, char** argv) {
 
 void print_help(const char* prog) {
     std::cout << "Usage: " << (prog ? prog : "panorama")
-              << " [-i|--input <images_dir>] [-o|--output <out_dir>] [-f|--file <out_file>]" << '\n'
+              << " [-i|--input <images_dir>] [-o|--output <out_dir>] [-f|--file <out_file>] [--top-match-only] [--max-dim N] [--mode panorama|scans]" << '\n'
               << "\n"
               << "Options:\n"
               << "  -i, --input   Directory containing input images (default: ./images)\n"
               << "  -o, --output  Directory to write panorama (default: ./output)\n"
               << "  -f, --file    Output filename, e.g. panorama.jpg (default: panorama.jpg)\n"
+              << "      --top-match-only  Match only the top half (helps moving crowds/cars)\n"
+              << "      --max-dim N  Downscale inputs so max(width,height) <= N (0 disables; default: 2000)\n"
+              << "      --mode panorama|scans  Use SCANS for translational captures (mosaics)\n"
               << "  -h, --help    Show this help and exit\n"
               << std::endl;
 }
