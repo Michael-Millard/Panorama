@@ -1,4 +1,4 @@
-# Mill's Panorama Generator
+# Panorama Generator
 A small, cross-platform panorama stitching tool to cure my unemployment boredom and make myself a LinkedIn background. It's written in C++17 using OpenCV 4.12 (any OpenCV 4.X should work fine).
 
 ## Some examples:
