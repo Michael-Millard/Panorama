@@ -10,12 +10,12 @@ Can definitely do a bit of editing here to make them prettier. Also, don't aim u
 
 <figure>
 	<figcaption align="center"><i>Trinity College Dublin Front Square</i></figcaption>
-	<img src="media/tcd_front_square_pano.jpg" alt="TCD Front Square panorama 1" style="max-width: 100%; width: 100%; height: auto;" />
+	<img src="media/tcd_front_square_pano_2.jpg" alt="TCD Front Square panorama 1" style="max-width: 100%; width: 100%; height: auto;" />
 </figure>
 
 <figure>
-	<figcaption align="center"><i>Trinity College Dublin Front Square, Again</i></figcaption>
-	<img src="media/tcd_front_square_pano_2.jpg" alt="TCD Front Square panorama 2" style="max-width: 100%; width: 100%; height: auto;" />
+	<figcaption align="center"><i>Howth Cliff Walk, Dublin</i></figcaption>
+	<img src="media/howth_pano.jpg" alt="Howth Cliff Walk" style="max-width: 100%; width: 100%; height: auto;" />
 </figure>
 
 ## Features
