@@ -123,16 +123,16 @@ std::size_t convert_heic_to_jpg_in_dir(const std::filesystem::path& dir,
     return converted;
 }
 
-cv::Mat trim_black_bands_top_bottom(const cv::Mat& input,
-                                    int black_threshold,
-                                    double min_black_row_fraction,
-                                    int extra_crop) {
+cv::Mat trim_black_bands(const cv::Mat& input,
+                        int black_threshold,
+                        double black_pixel_ratio_threshold,
+                        int extra_crop) {
     if (input.empty()) {
         return input.clone();
     }
     CV_Assert(input.channels() == 1 || input.channels() == 3 || input.channels() == 4);
 
-    // Convert to grayscale to measure darkness per row
+    // Convert to grayscale to measure darkness per row/col
     cv::Mat gray;
     if (input.channels() == 3) {
         cv::cvtColor(input, gray, cv::COLOR_BGR2GRAY);
@@ -145,7 +145,8 @@ cv::Mat trim_black_bands_top_bottom(const cv::Mat& input,
     const int rows = gray.rows;
     const int cols = gray.cols;
     const int max_black = std::clamp(black_threshold, 0, 255);
-    const int row_black_limit = static_cast<int>(std::clamp(min_black_row_fraction, 0.0, 1.0) * cols);
+    const int row_black_limit = static_cast<int>(std::clamp(black_pixel_ratio_threshold, 0.0, 1.0) * cols);
+    const int col_black_limit = static_cast<int>(std::clamp(black_pixel_ratio_threshold, 0.0, 1.0) * rows);
 
     auto row_is_black = [&](int r) -> bool {
         const uchar* ptr = gray.ptr<uchar>(r);
@@ -154,38 +155,62 @@ cv::Mat trim_black_bands_top_bottom(const cv::Mat& input,
             if (ptr[c] <= max_black) {
                 ++cnt;
                 if (cnt >= row_black_limit) {
-                    return true; // enough black to consider this row black
+                    return true;
                 }
             }
         }
         return false;
     };
 
+    auto col_is_black = [&](int c) -> bool {
+        int cnt = 0;
+        for (int r = 0; r < rows; ++r) {
+            if (gray.at<uchar>(r, c) <= max_black) {
+                ++cnt;
+                if (cnt >= col_black_limit) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    // Find top
     int top = 0;
     while (top < rows && row_is_black(top)) {
         ++top;
     }
 
+    // Find bottom
     int bottom = rows - 1;
     while (bottom >= 0 && row_is_black(bottom)) {
         --bottom;
     }
 
-    if (top == 0 && bottom == rows - 1) {
-        // No black bands detected
-        return input.clone();
+    // Find left
+    int left = 0;
+    while (left < cols && col_is_black(left)) {
+        ++left;
+    }
+
+    // Find right
+    int right = cols - 1;
+    while (right >= 0 && col_is_black(right)) {
+        --right;
     }
 
     // Apply extra safety crop inside bounds
     top = std::min(std::max(0, top + extra_crop), rows - 1);
     bottom = std::max(0, std::min(rows - 1, bottom - extra_crop));
+    left = std::min(std::max(0, left + extra_crop), cols - 1);
+    right = std::max(0, std::min(cols - 1, right - extra_crop));
 
-    if (bottom <= top) {
+    if (bottom <= top || right <= left) {
         // Cropped out everything; return original to be safe
         return input.clone();
     }
 
-    cv::Rect roi(0, top, cols, bottom - top + 1);
+    cv::Rect roi(left, top, right - left + 1, bottom - top + 1);
     return input(roi).clone();
 }
 

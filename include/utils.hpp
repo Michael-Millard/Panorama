@@ -30,12 +30,12 @@ std::size_t convert_heic_to_jpg_in_dir(const std::filesystem::path& dir,
 
 // Trim nearly-black horizontal bands from the top and bottom of an image.
 // - black_threshold: pixel intensity (0-255) below/eq which a pixel is considered black.
-// - min_black_row_fraction: if >= this fraction of pixels in a row are black, the row is treated as black.
+// - black_pixel_ratio_threshold: if >= this fraction of pixels in a row are black, the row is treated as black.
 // - extra_crop: additional pixels to crop inside the detected bounds for safety.
 // Returns a cropped copy if trimming was applied; otherwise returns a copy of the input.
-cv::Mat trim_black_bands_top_bottom(const cv::Mat& input,
+cv::Mat trim_black_bands(const cv::Mat& input,
                                     int black_threshold = 20,
-                                    double min_black_row_fraction = 0.80,
-                                    int extra_crop = 0);
+                                    double black_pixel_ratio_threshold = 0.10,
+                                    int extra_crop = 1);
 
 } // namespace utils

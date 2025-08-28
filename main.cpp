@@ -106,11 +106,11 @@ int main(int argc, char** argv) {
             return 7;
         }
 
-        // Trim black bands (top/bottom) from result
+        // Trim black bands from result
         int blackThresh = 5;                // Threshold for black pixel detection
-        double rowBlackPixelRatio = 0.05;   // % of black pixels in the row to trim it
-        int trimExtra = 2;                  // Safety trim
-        cv::Mat trimmed = utils::trim_black_bands_top_bottom(pano, blackThresh, rowBlackPixelRatio, trimExtra);
+        double blackPixelRatio = 0.05;   // % of black pixels in the row/col to trim it
+        int trimExtra = 1;                  // Safety trim
+        cv::Mat trimmed = utils::trim_black_bands(pano, blackThresh, blackPixelRatio, trimExtra);
 
         // Save result
         if (!cv::imwrite(outFile.string(), trimmed)) {
