@@ -1,5 +1,5 @@
 # Panorama Generator
-A small, cross-platform panorama stitching tool to cure my unemployment boredom and make myself a LinkedIn background. It's written in C++17 using OpenCV 4.12 (any OpenCV 4.X should work fine).
+A small, cross-platform panorama stitching tool to create myself a LinkedIn background and explore Dublin one last time before moving to London. It's written in C++17 using OpenCV 4.12 (any OpenCV 4.X should work fine).
 
 ## Some examples:
 Can definitely do a bit of editing here to make them prettier. Also, don't aim up as much as I did. Keep the camera as horizontal as possible for best results. Would also recommend choosing a nicer day than I did but this is Dublin so beggars can't be choosers.
